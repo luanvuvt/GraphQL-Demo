@@ -1,14 +1,37 @@
-var express = require('express');
-var graphqlHTTP = require('express-graphql');
-var { buildSchema } = require('graphql');
+var express = require("express");
+var graphqlHTTP = require("express-graphql");
+var { buildSchema } = require("graphql");
 
 var schema = buildSchema(`
+  type Person {
+    name: String,
+    hello(msg: String): String
+  }
+
   type Query {
     hello: String
+    list(num: Int = 3): Int
+    person: Person
   }
 `);
 
-var root = { hello: () => 'Hello world!' };
+class Person {
+  constructor() {
+    this.name = "Bob";
+  }
+
+  hello({ msg }) {
+    return msg;
+  }
+}
+
+const root = {
+  hello: () => "Hello world!",
+  list: (args) => {
+    return args.num;
+  },
+  person: () => new Person()
+};
 
 var app = express();
 app.use('/graphql', graphqlHTTP({
