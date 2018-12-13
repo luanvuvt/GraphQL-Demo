@@ -1,6 +1,13 @@
 var express = require("express");
 var graphqlHTTP = require("express-graphql");
 var { buildSchema } = require("graphql");
+const mongoose = require('mongoose');
+
+mongoose.connect('mongodb://root:example@mongo:27017/gra');
+const Cat = mongoose.model('Cat', { name: String });
+
+const kitty = new Cat({ name: 'Zildjian 3 4 5 6 7 8' });
+kitty.save().then(() => console.log('meow'));
 
 var schema = buildSchema(`
   type Person {
@@ -26,7 +33,7 @@ class Person {
 }
 
 const root = {
-  hello: () => "Hello world!",
+  hello: () => "Hello GraphQL!",
   list: (args) => {
     return args.num;
   },
